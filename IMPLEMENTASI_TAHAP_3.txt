@@ -1,0 +1,28 @@
+GRAPHMATH — TAHAP 3: IMPLEMENTASI WEB
+
+Tahap ini menerapkan desain Tahap 1 dan Tahap 2 ke dalam web game menggunakan HTML, CSS, dan JavaScript.
+
+IMPLEMENTASI UTAMA
+- Lobby/Menu Utama: Mulai Petualangan, Materi, Tutorial, Pilih Level, Lanjutkan, Pengaturan.
+- Video Materi dasar dan Tutorial gameplay diambil dari file MP4 lokal.
+- Peta 6 level mengikuti urutan materi GraphMath.
+- Gameplay Canvas dengan dunia petualangan 2D, platform, karakter, portal, grid koordinat, dan jalur fungsi.
+- Jenis tantangan: membaca koordinat, menghitung nilai fungsi, menghitung gradien, menentukan fungsi dari dua titik, mengevaluasi fungsi menjadi titik, dan soal cerita fungsi linear.
+- Input manual, feedback benar/salah, petunjuk, animasi grafik dan perjalanan karakter.
+- Checkpoint, skor, level terbuka, dan progres di localStorage.
+- Responsif untuk laptop dan HP.
+
+PENGUJIAN YANG DILAKUKAN
+- Pemeriksaan sintaks JavaScript untuk levels.js, world.js, dan app.js.
+- Pemeriksaan semua referensi ID HTML yang digunakan oleh JavaScript.
+- Pengujian alur untuk keenam level dengan jawaban benar, animasi ke portal, dan perpindahan ke checkpoint.
+- Pengujian responsive layout di viewport desktop dan ponsel; tidak ditemukan overflow horizontal pada uji ponsel.
+
+BATASAN YANG DIKETAHUI
+- Dua video yang disertakan merupakan video berbasis slide visual dan teks tanpa narasi suara.
+- Parser persamaan baru menangani fungsi linear sederhana dalam bentuk y = mx + b.
+- Visual karakter dan lingkungan digambar menggunakan Canvas/CSS sebagai aset prototipe; belum berupa animasi karakter berkualitas produksi.
+- Penyimpanan progres berlaku pada browser dan perangkat yang sama.
+
+CARA MENJALANKAN
+Lihat README.md. Disarankan memakai ekstensi Live Server pada Visual Studio Code supaya file media lokal lebih mudah diputar oleh browser.
