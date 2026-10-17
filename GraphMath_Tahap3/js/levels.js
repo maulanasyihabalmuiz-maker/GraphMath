@@ -39,10 +39,10 @@ window.GRAPHMATH_LEVELS = [
     solution:{m:-1,b:5}, showEquation:true, successText:"Tepat! Saat x = 2, nilai y adalah 3. Titik (2,3) berada pada grafik fungsi.", hint:"Masukkan x = 2: y = −2 + 5.", instructions:["Baca persamaan fungsi.","Tentukan nilai x yang diberikan.","Hitung y dengan substitusi.","Cocokkan titik dengan grafik."]
   },
   {
-    id: 6, title: "Tantangan Gabungan", subtitle: "Misi Jalur Penghubung", topic: "Bab 6 · Hubungan Koordinat, Fungsi, dan Grafik", difficulty: "LANJUTAN", kind: "storyEquation",
-    description: "Menerapkan koordinat, gradien, fungsi, dan grafik dalam konteks misi.",
-    story: "Dua platform dihubungkan jalur lurus. Jalur melewati titik A <strong>(1, 2)</strong> dan titik B <strong>(5, 10)</strong>. Susun fungsi linear yang menggambarkan jalur penghubung agar karakter dapat mencapai portal.",
-    facts:[{label:"Platform A",value:"(1, 2)"},{label:"Platform B",value:"(5, 10)"}], start:{x:1,y:2},goal:{x:5,y:10}, answerPrefix:"y =",answerLabel:"Fungsi jalur",answerPlaceholder:"contoh: 2*x",answerHelp:"Tentukan gradien dari dua titik, lalu cari konstanta b.",
-    expectedFunction:{m:2,b:0}, solution:{m:2,b:0}, showEquation:true, successText:"Misi selesai! Fungsi y = 2x menggambarkan jalur lurus yang menghubungkan kedua platform.", hint:"Gradien m = (10 − 2) / (5 − 1). Setelah memperoleh m, gunakan titik A(1,2) untuk mencari b.", instructions:["Pahami informasi pada cerita.","Identifikasi titik A dan B.","Tentukan m dan b.","Masukkan fungsi lalu ikuti jalur."]
+    id: 6, title: "Tantangan Gabungan", subtitle: "Misi Jalur Menurun", topic: "Bab 6 · Hubungan Koordinat, Fungsi, dan Grafik", difficulty: "LANJUTAN", kind: "storyEquation",
+    description: "Menerapkan koordinat, gradien negatif, fungsi, dan grafik dalam konteks jalur landai.",
+    story: "Sebuah jalur landai menghubungkan bagian atas bukit dengan permukaan tanah. Pada peta koordinat, jalur melewati titik A <strong>(0, 5)</strong> dan B <strong>(5, 0)</strong>. Anggap x sebagai jarak mendatar dan y sebagai ketinggian. Tentukan fungsi linear jalur tersebut.",
+    facts:[{label:"Atas bukit · A",value:"(0, 5)"},{label:"Tanah · B",value:"(5, 0)"}], start:{x:0,y:5},goal:{x:5,y:0}, answerPrefix:"y =",answerLabel:"Persamaan jalur",answerPlaceholder:"contoh: -x+5",answerHelp:"Hitung gradien dari dua titik. Karena jalur menurun, periksa tanda gradiennya.",
+    expectedFunction:{m:-1,b:5}, solution:{m:-1,b:5}, showEquation:true, successText:"Tepat! Persamaan y = −x + 5 menunjukkan jalur menurun dari ketinggian 5 ke permukaan tanah.", hint:"m = (0 − 5) / (5 − 0) = −1. Karena titik A(0,5) berada pada sumbu-Y, nilai b = 5.", instructions:["Baca konteks dan koordinat A serta B.","Hitung perubahan y dibagi perubahan x.","Tentukan konstanta b dengan salah satu titik.","Periksa persamaan lalu ikuti jalur menuju portal."]
   }
 ];

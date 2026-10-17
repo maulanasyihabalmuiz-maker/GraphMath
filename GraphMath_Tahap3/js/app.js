@@ -3,8 +3,8 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const LEVELS = window.GRAPHMATH_LEVELS;
-  const PAGE_IDS = ['homePage','materialPage','tutorialPage','levelsPage','gamePage','checkpointPage'];
-  const KEY = {score:'graphmath-v3-score',completed:'graphmath-v3-completed',unlocked:'graphmath-v3-unlocked',current:'graphmath-v3-current',motion:'graphmath-v3-motion'};
+  const PAGE_IDS = ['introPage','homePage','materialPage','tutorialPage','infoPage','levelsPage','gamePage','checkpointPage','testPage'];
+  const KEY = {score:'graphmath-v3-score',completed:'graphmath-v3-completed',unlocked:'graphmath-v3-unlocked',current:'graphmath-v3-current',motion:'graphmath-v3-motion',bgm:'graphmath-v5-bgm',bgmVolume:'graphmath-v5-bgm-volume',testScore:'graphmath-v4-test-score'};
   // localStorage tersedia di browser biasa; gunakan penyimpanan sementara jika akses dibatasi.
   const storage = (() => {
     try { const s = window.localStorage; const probe = '__graphmath_probe__'; s.setItem(probe, '1'); s.removeItem(probe); return s; }
@@ -32,6 +32,7 @@
     const hasSave = storage.getItem(KEY.current) !== null;
     $('homeContinue').classList.toggle('hidden', !hasSave);
     if ($('progressText')) $('progressText').textContent = `${completed.size} / ${LEVELS.length}`;
+    if ($('homeTest')) $('homeTest').classList.toggle('hidden', !completed.has(6));
   }
   function go(pageId){
     if (!PAGE_IDS.includes(pageId)) return;
@@ -41,7 +42,9 @@
     if (pageId !== 'tutorialPage') $('tutorialVideo').pause();
     if (pageId === 'levelsPage') renderLevels();
     if (pageId === 'gamePage' && level) renderWorld();
+    if (pageId === 'testPage' && typeof window.GraphMathRenderTest === 'function') window.GraphMathRenderTest();
     updateHeader();
+    if (typeof window.GraphMathAudioSync === 'function') window.GraphMathAudioSync(pageId);
   }
   document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => go(button.dataset.go)));
 
@@ -199,11 +202,11 @@
     $('checkpointTitle').textContent=`Level ${level.id} Selesai!`;
     $('checkpointMessage').textContent=level.kind==='coordinate'?'Kamu berhasil membaca koordinat dan menemukan portal.':`Kamu berhasil menyelesaikan misi “${level.title}” dan mencapai portal.`;
     $('checkpointScore').textContent=score;$('checkpointTries').textContent=tries;$('checkpointCompleted').textContent=`${completed.size} / ${LEVELS.length}`;
-    const next=$('checkpointNext');if(level.id===6){next.textContent='Semua Level Selesai!';next.disabled=true;}else{next.textContent='Level Berikutnya →';next.disabled=false;}
+    const next=$('checkpointNext');if(level.id===6){next.textContent='Mulai Tes Akhir →';next.disabled=false;}else{next.textContent='Level Berikutnya →';next.disabled=false;}
     go('checkpointPage');
   }
   function saveAndHome(){persist();go('homePage');}
-  function nextLevel(){if(!level)return;if(level.id>=6){go('levelsPage');return;}startLevel(level.id+1);}
+  function nextLevel(){if(!level)return;if(level.id>=6){go('testPage');return;}startLevel(level.id+1);}
   $('checkAnswer').addEventListener('click',checkAnswer);
   $('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkAnswer();});
   $('hintAnswer').addEventListener('click',showHint);
@@ -227,5 +230,8 @@
   function escapeHTML(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
   window.addEventListener('resize',()=>{if($('gamePage').classList.contains('active'))renderWorld();});
   window.addEventListener('beforeunload',()=>{if(level)persist();});
+  // API navigasi kecil agar halaman tambahan tetap memakai mekanisme navigasi yang sama.
+  window.GraphMathGo = go;
+  window.GraphMathStartLevel = startLevel;
   updateHeader();renderLevels();
 })();

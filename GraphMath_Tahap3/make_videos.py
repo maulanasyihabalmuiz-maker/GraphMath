@@ -1,5 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
-import os, math, subprocess
+import os, math, subprocess, json
 ROOT=os.path.dirname(__file__)
 MEDIA=os.path.join(ROOT,'media')
 os.makedirs(MEDIA,exist_ok=True)
@@ -95,8 +95,8 @@ def slide_card(im,d,heading,body_lines,formula=None,chart_data=None,side_note=No
 
 def make_material_slides():
     slides=[]; total=6
-    # 1 title
-    im,d=base('MATERI DASAR GRAPHMATH','Koordinat Kartesius · Fungsi · Fungsi Linear · Grafik Fungsi',1,total)
+    # 1 opening
+    im,d=base('MATERI DASAR GRAPHMATH','Koordinat Kartesius · Fungsi · Gradien dan Persamaan Garis · Grafik',1,total)
     rr(d,(90,174,1190,610),26,'#ffffffeb','#c0dfe2',2)
     d.text((140,217),'Dari koordinat menuju portal',font=font(40,True),fill='#073b2c')
     d.text((142,282),'GraphMath menghubungkan tiga ide utama:',font=font(24),fill='#28483a')
@@ -107,7 +107,7 @@ def make_material_slides():
         d.text((x+24,426),b,font=font(19),fill='#344e43')
     d.text((143,546),'Tujuan: memahami konsep, melihat grafik, dan memecahkan tantangan.',font=font(20,True),fill='#1761ad')
     slides.append(im)
-    # 2 coords
+    # 2 coordinates
     im,d=base('1. KOORDINAT KARTESIUS','Posisi titik ditulis sebagai pasangan terurut (x, y).',2,total)
     slide_card(im,d,'Cara membaca koordinat',['x dibaca lebih dahulu: bergerak ke kiri atau kanan.','y dibaca berikutnya: bergerak ke bawah atau atas.','Titik pusat berada pada O(0, 0).'],'(x, y)',{'points':[(3,2,'A')]})
     slides.append(im)
@@ -121,22 +121,34 @@ def make_material_slides():
     rr(d,(118,488,525,547),13,'#fff0bf','#e3c15c',2);d.text((321,500),'Output = 7',font=font(29,True),fill='#173f2d',anchor='ma')
     chart(d,(630,158,1217,620),func=(2,1),points=[(3,7,'A')])
     slides.append(im)
-    # 4 linear
-    im,d=base('3. FUNGSI LINEAR','Bentuk umum fungsi linear adalah y = mx + b.',4,total)
-    slide_card(im,d,'Gradien dan konstanta',['m adalah gradien atau kemiringan garis.','b adalah titik potong dengan sumbu-Y.','Gradien positif: garis naik dari kiri ke kanan.'],'y = mx + b',{'func':(1,2),'points':[(0,2,'b')]},'Contoh: y = x + 2')
-    slides.append(im)
-    # 5 two points
-    im,d=base('4. MENENTUKAN FUNGSI DARI DUA TITIK','Gunakan dua titik untuk menghitung m, kemudian cari b.',5,total)
+    # 4 one unified lesson: slope from two points + line equation
+    im,d=base('3. GRADIEN DAN PERSAMAAN GARIS','Dua rumus yang digunakan berurutan untuk menentukan persamaan garis.',4,total)
     rr(d,(55,151,595,625),22,'#ffffffef','#d0e1e3',2)
-    d.text((88,180),'Contoh A(2, 3) dan B(6, 11)',font=font(25,True),fill='#0c5138')
-    for i,line in enumerate(['m = (11 − 3) / (6 − 2) = 2','Bentuk: y = 2x + b','3 = 2(2) + b, sehingga b = −1']):
-        y=240+i*63;d.ellipse((90,y+6,102,y+18),fill='#168553');d.text((119,y),line,font=font(21),fill='#24443a')
-    rr(d,(88,450,562,530),16,'#fff1c4','#e6c25f',2);d.text((325,468),'y = 2x − 1',font=font(34,True),fill='#173d30',anchor='ma')
-    d.text((90,560),'Persamaan melewati kedua titik.',font=font(18,True),fill='#1761ad')
+    d.text((88,180),'Satu konsep, dua bentuk',font=font(27,True),fill='#0c5138')
+    d.text((90,232),'Langkah 1 · hitung gradien dari dua titik',font=font(17,True),fill='#24443a')
+    rr(d,(88,264,562,329),14,'#fff1c4','#e6c25f',2)
+    d.text((325,282),'m = (y₂ − y₁) / (x₂ − x₁)',font=font(23,True),fill='#173d30',anchor='ma')
+    d.text((90,354),'Langkah 2 · gunakan gradien pada persamaan',font=font(17,True),fill='#24443a')
+    rr(d,(88,386,562,449),14,'#e4f3ea','#abd5b9',2)
+    d.text((325,401),'y = mx + b',font=font(30,True),fill='#173d30',anchor='ma')
+    d.text((90,474),'m = gradien · b = potong sumbu-Y',font=font(17,True),fill='#24443a')
+    d.text((90,514),'Selesaikan berurutan: cari m, lalu b.',font=font(18,True),fill='#1761ad')
     chart(d,(630,158,1217,620),func=(2,-1),points=[(2,3,'A'),(6,11,'B')])
     slides.append(im)
-    # 6 graph path
-    im,d=base('5. GRAFIK MENJADI JALUR','Persamaan yang benar divisualisasikan pada bidang koordinat.',6,total)
+    # 5 worked example as the continuation of the same unified lesson
+    im,d=base('CONTOH TERPADU · DUA TITIK KE PERSAMAAN','Lanjutkan langkah gradien hingga memperoleh y = mx + b.',5,total)
+    rr(d,(55,151,595,625),22,'#ffffffef','#d0e1e3',2)
+    d.text((88,178),'Diketahui A(2, 3) dan B(6, 11)',font=font(23,True),fill='#0c5138')
+    rr(d,(88,224,562,280),14,'#fff1c4','#e6c25f',2)
+    d.text((325,240),'m = (11 − 3) / (6 − 2) = 2',font=font(21,True),fill='#173d30',anchor='ma')
+    d.text((91,307),'Gunakan titik A pada y = mx + b:',font=font(17,True),fill='#24443a')
+    d.text((91,344),'3 = 2(2) + b  →  b = −1',font=font(20,True),fill='#24443a')
+    rr(d,(88,401,562,472),16,'#e4f3ea','#abd5b9',2);d.text((325,418),'y = 2x − 1',font=font(33,True),fill='#173d30',anchor='ma')
+    d.text((90,500),'Periksa: kedua titik berada pada garis ini.',font=font(17,True),fill='#1761ad')
+    chart(d,(630,158,1217,620),func=(2,-1),points=[(2,3,'A'),(6,11,'B')])
+    slides.append(im)
+    # 6 graph and game link
+    im,d=base('4. GRAFIK MENJADI JALUR','Persamaan yang benar divisualisasikan pada bidang koordinat.',6,total)
     rr(d,(55,151,595,625),22,'#ffffffef','#d0e1e3',2)
     d.text((88,184),'Dari jawaban ke petualangan',font=font(27,True),fill='#0c5138')
     for i,line in enumerate(['Tulis fungsi secara manual.','Periksa apakah persamaan sudah benar.','Grafik muncul pada map permainan.','Ikuti jalur hingga mencapai portal.']):
@@ -189,28 +201,94 @@ def make_tutorial_slides():
     slides.append(im)
     return slides
 
-def render_video(slides,outfile,posterfile):
-    # Poster at the first slide
+# Narasi diperlambat dan diberi jeda agar tidak terasa terburu-buru.
+MATERIAL_NARRATION = [
+    "Selamat datang di GraphMath. Kita akan menghubungkan koordinat, fungsi, dan grafik untuk memecahkan tantangan matematika.",
+    "Koordinat ditulis sebagai pasangan x dan y. Baca x untuk arah mendatar, lalu y untuk arah tegak. Titik pusatnya adalah nol, nol.",
+    "Fungsi memasangkan setiap input dengan tepat satu output. Contohnya, fungsi dua x tambah satu menghasilkan tujuh saat x bernilai tiga.",
+    "Bentuk persamaan garis adalah y sama dengan m x tambah b. m adalah gradien, sedangkan b adalah titik potong dengan sumbu Y. Jika diketahui dua titik, hitung m dengan rumus y dua dikurangi y satu, dibagi x dua dikurangi x satu.",
+    "Misalnya titik A dua, tiga dan B enam, sebelas. Selisih y adalah delapan, dan selisih x adalah empat, jadi gradiennya dua. Masukkan ke persamaan, lalu gunakan titik A untuk memperoleh b sama dengan negatif satu. Persamaannya y sama dengan dua x dikurangi satu.",
+    "Persamaan yang benar menjadi garis pada bidang koordinat. Dalam GraphMath, garis itu menjadi jalur yang mengarahkan karakter menuju portal dan checkpoint.",
+]
+TUTORIAL_NARRATION = [
+    "Selamat datang di GraphMath. Selesaikan misi matematika dengan membentuk grafik sebagai jalur menuju portal.",
+    "Baca koordinat titik awal dan portal dengan urutan x terlebih dahulu, lalu y. Perhatikan tanda positif dan negatif.",
+    "Jenis soal akan berbeda pada setiap level. Kamu akan membaca koordinat, menghitung nilai fungsi, menentukan gradien, dan menyusun persamaan garis.",
+    "Ketik jawaban pada kolom yang disediakan. Gunakan rumus pada materi, periksa perhitungan, lalu tekan tombol Periksa Jawaban.",
+    "Jika jawaban belum tepat, baca umpan balik di layar. Periksa lagi selisih y, selisih x, atau konstanta, lalu coba kembali.",
+    "Saat jawaban benar, grafik akan terbentuk dan karakter bergerak mengikuti jalur. Capai portal untuk membuka level berikutnya. Progres tersimpan di perangkatmu.",
+]
+
+def _wav_duration(path):
+    import wave
+    with wave.open(path, 'rb') as w:
+        return w.getnframes() / float(w.getframerate())
+
+def make_voiceover(narrations, output_wav, temp_dir):
+    """Buat narasi Indonesia lebih lambat, dengan normalisasi dan jeda antarslide."""
+    os.makedirs(temp_dir, exist_ok=True)
+    chunks=[]
+    slide_durations=[]
+    speech_durations=[]
+    for idx, text in enumerate(narrations):
+        raw=os.path.join(temp_dir, f'voice-{idx:02d}-raw.wav')
+        clean=os.path.join(temp_dir, f'voice-{idx:02d}-clean.wav')
+        chunk=os.path.join(temp_dir, f'voice-{idx:02d}-padded.wav')
+        # Pitch and tempo stay in a conversational range; previous build was too fast.
+        subprocess.run(['espeak','-v','id+f2','-s','148','-p','48','-a','125','-w',raw,text],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        # Slight filtering and dynamics control make the level easier to listen to.
+        af='highpass=f=90,lowpass=f=7500,acompressor=threshold=-22dB:ratio=2:attack=15:release=180:makeup=2,loudnorm=I=-16:TP=-2:LRA=7'
+        subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-i',raw,'-af',af,'-ar','44100','-ac','2','-c:a','pcm_s16le',clean],check=True)
+        speech_duration=_wav_duration(clean)
+        # A full pause at the end of the narration lets students process each idea.
+        slide_duration=max(9.0, round((speech_duration+1.3)*2)/2)
+        pad=max(0.1, slide_duration-speech_duration)
+        subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-i',clean,'-af',f'apad=pad_dur={pad:.3f},atrim=duration={slide_duration:.3f}','-ar','44100','-ac','2','-c:a','pcm_s16le',chunk],check=True)
+        chunks.append(chunk); slide_durations.append(slide_duration); speech_durations.append(speech_duration)
+    concat=os.path.join(temp_dir,'audio-concat.txt')
+    with open(concat,'w',encoding='utf-8') as f:
+        for path in chunks: f.write("file '"+path.replace("'", "'\\''")+"'\n")
+    subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-f','concat','-safe','0','-i',concat,'-c:a','pcm_s16le',output_wav],check=True)
+    return output_wav, slide_durations, speech_durations
+
+def write_vtt(narrations, output_vtt, slide_durations, speech_durations):
+    def stamp(seconds):
+        ms=round(seconds*1000)
+        h=ms//3600000; ms%=3600000; m=ms//60000; ms%=60000; sec=ms//1000; ms%=1000
+        return f'{h:02d}:{m:02d}:{sec:02d}.{ms:03d}'
+    cursor=0.0
+    with open(output_vtt,'w',encoding='utf-8') as f:
+        f.write('WEBVTT\n\n')
+        for i,text in enumerate(narrations):
+            f.write(f'{i+1}\n{stamp(cursor)} --> {stamp(cursor+speech_durations[i]-0.08)}\n{text}\n\n')
+            cursor += slide_durations[i]
+
+def render_video(slides,outfile,posterfile,narrations=None):
+    """Render video edukasi visual tanpa narasi/audio."""
+    frame_dir=os.path.join(MEDIA,os.path.splitext(os.path.basename(outfile))[0]+'_frames')
+    os.makedirs(frame_dir,exist_ok=True)
+    # Keep each slide visible long enough to read without spoken narration.
+    slide_durations=[12.0 for _ in slides]
     slides[0].save(posterfile,quality=90)
-    frame_dir=os.path.join(MEDIA,os.path.splitext(os.path.basename(outfile))[0]+'_frames');os.makedirs(frame_dir,exist_ok=True)
     listfile=os.path.join(frame_dir,'concat.txt')
     lines=[]
     for i,im in enumerate(slides):
-        png=os.path.join(frame_dir,f'slide-{i:02d}.png');im.save(png,optimize=True)
-        lines.append(f"file '{png}'\nduration 4.5\n")
-    lines.append(f"file '{os.path.join(frame_dir, f'slide-{len(slides)-1:02d}.png')}'\n")
-    with open(listfile,'w',encoding='utf-8') as f:f.writelines(lines)
-    tmp=outfile+'.tmp.mp4'
+        png=os.path.join(frame_dir,f'slide-{i:02d}.png')
+        im.save(png,optimize=True)
+        lines.append(f"file '{png}'\nduration {slide_durations[i]:.3f}\n")
+    last=os.path.join(frame_dir,f'slide-{len(slides)-1:02d}.png')
+    lines.append(f"file '{last}'\nduration 0.04\n")
+    with open(listfile,'w',encoding='utf-8') as f:
+        f.writelines(lines)
+    tmp=outfile+'.silent.tmp.mp4'
     cmd=['ffmpeg','-y','-hide_banner','-loglevel','error','-f','concat','-safe','0','-i',listfile,'-vf','fps=24,format=yuv420p','-c:v','libx264','-preset','medium','-crf','24','-movflags','+faststart','-an',tmp]
     subprocess.run(cmd,check=True)
     os.replace(tmp,outfile)
-    # keep slides/posters but remove source frames for a compact deliverable
-    for name in os.listdir(frame_dir):
-        if name.endswith('.png'):os.remove(os.path.join(frame_dir,name))
-    try: os.remove(listfile);os.rmdir(frame_dir)
-    except OSError: pass
+    import shutil
+    shutil.rmtree(frame_dir,ignore_errors=True)
+
 
 if __name__=='__main__':
-    render_video(make_material_slides(),os.path.join(MEDIA,'materi-dasar.mp4'),os.path.join(MEDIA,'materi-poster.jpg'))
-    render_video(make_tutorial_slides(),os.path.join(MEDIA,'tutorial-gameplay.mp4'),os.path.join(MEDIA,'tutorial-poster.jpg'))
+    render_video(make_material_slides(),os.path.join(MEDIA,'materi-dasar.mp4'),os.path.join(MEDIA,'materi-poster.jpg'),MATERIAL_NARRATION)
+    render_video(make_tutorial_slides(),os.path.join(MEDIA,'tutorial-gameplay.mp4'),os.path.join(MEDIA,'tutorial-poster.jpg'),TUTORIAL_NARRATION)
     print('Videos created')
